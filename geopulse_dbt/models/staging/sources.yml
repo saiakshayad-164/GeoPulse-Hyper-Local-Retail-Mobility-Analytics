@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: geopulse_raw
+    description: "Raw geospatial GPS pings and retail store locations ingested into Snowflake"
+    database: GEOPULSE_DB
+    schema: RAW
+    tables:
+      - name: raw_gps_pings
+        description: "Anonymized mobile GPS ping events with device ID, coordinates, and timestamp"
+        columns:
+          - name: ping_id
+            description: "Unique identifier for each GPS ping"
+          - name: device_id
+            description: "Anonymized mobile device identifier"
+          - name: latitude
+            description: "Latitude coordinate of the ping"
+          - name: longitude
+            description: "Longitude coordinate of the ping"
+          - name: ping_timestamp
+            description: "UTC timestamp when the GPS ping was recorded"
+
+      - name: dim_stores
+        description: "Master table of existing and competitor retail store locations"
+        columns:
+          - name: store_id
+            description: "Unique identifier for each retail store"
+          - name: store_name
+            description: "Name of the store branch"
+          - name: brand_type
+            description: "Flag indicating Own Store vs Competitor Store"
+          - name: latitude
+            description: "Store latitude coordinate"
+          - name: longitude
+            description: "Store longitude coordinate"
