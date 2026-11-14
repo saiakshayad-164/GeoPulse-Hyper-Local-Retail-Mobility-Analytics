@@ -1,0 +1,6 @@
+Store_ID,Store_Name,Latitude,Longitude,Area,Store_Type
+STORE_A,GeoPulse Coffee - Store A (Sanjay Place),27.1984,78.0081,Sanjay Place,Existing
+STORE_B,GeoPulse Coffee - Store B (Tajganj),27.1751,78.0421,Tajganj,Proposed
+STORE_C,GeoPulse Coffee - Store C (Sadar Bazaar),27.1594,78.0116,Sadar Bazaar,Existing
+STORE_D,GeoPulse Coffee - Store D (Kamla Nagar),27.213,78.002,Kamla Nagar,Existing
+STORE_E,GeoPulse Coffee - Store E (Raja ki Mandi),27.1934,77.997,Raja ki Mandi,Existing
