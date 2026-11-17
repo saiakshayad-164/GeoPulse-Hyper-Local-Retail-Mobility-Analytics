@@ -10,4 +10,4 @@
 - [x] Day 2: Configure Snowflake source definitions (`sources.yml`).
 - [x] Day 3: Build staging SQL models (`stg_gps_pings.sql` & `stg_stores.sql`)     geospatial point conversion.
 - [x] Day 4: Build core geospatial mart models (`fct_store_footfall.sql` & `fct_cannibalization_metrics.sql`).
-- [ ] Day 5: Add schema validation tests (`schema.yml`).
+- [x] Day 5: Add dbt schema documentation and automated data quality tests (`stg_schema.yml` & `marts_schema.yml`).
