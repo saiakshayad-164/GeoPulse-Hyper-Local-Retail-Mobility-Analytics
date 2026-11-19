@@ -4,31 +4,22 @@
     )
 }}
 
-with raw_pings as (
-    select * from {{ source('geopulse_raw', 'raw_gps_pings') }}
+with source_data as (
+    select * from {{ source('geopulse_raw', 'GPS_PINGS') }}
 ),
 
-cleaned_pings as (
+cleaned as (
     select
-        ping_id,
-        device_id,
-        cast(latitude as float) as latitude,
-        cast(longitude as float) as longitude,
-        to_timestamp_ntz(ping_timestamp) as ping_timestamp,
-        date_trunc('hour', to_timestamp_ntz(ping_timestamp)) as ping_hour,
-        extract(hour from to_timestamp_ntz(ping_timestamp)) as hour_of_day,
-        dayname(to_timestamp_ntz(ping_timestamp)) as day_of_week,
-        st_point(cast(longitude as float), cast(latitude as float)) as geo_point
-    from raw_pings
-    where latitude is not null
-      and longitude is not null
-      and latitude between -90 and 90
-      and longitude between -180 and 180
-      and device_id is not null
-    qualify row_number() over (
-        partition by device_id, ping_timestamp 
-        order by ping_id
-    ) = 1
+        cast(DEVICEID as varchar) as device_id,
+        cast(LATITUDE as float) as latitude,
+        cast(LONGITUDE as float) as longitude,
+        cast(EVENT_TIMESTAMP as timestamp_ntz) as ping_timestamp,
+        LOCATION as gps_location
+    from source_data
+    where DEVICEID is not null
+      and LATITUDE is not null
+      and LONGITUDE is not null
+      and EVENT_TIMESTAMP is not null
 )
 
-select * from cleaned_pings
+select distinct * from cleaned

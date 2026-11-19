@@ -2,34 +2,35 @@ version: 2
 
 sources:
   - name: geopulse_raw
-    description: "Raw geospatial GPS pings and retail store locations ingested into Snowflake"
+    description: "Raw GPS pings and store master data from Member 1, plus spatial join output from Member 2"
     database: GEOPULSE_DB
-    schema: RAW
+    schema: PUBLIC
     tables:
-      - name: raw_gps_pings
-        description: "Anonymized mobile GPS ping events with device ID, coordinates, and timestamp"
+      - name: GPS_PINGS
+        description: "Verified anonymized mobile GPS ping events from Member 1"
         columns:
-          - name: ping_id
-            description: "Unique identifier for each GPS ping"
-          - name: device_id
-            description: "Anonymized mobile device identifier"
-          - name: latitude
-            description: "Latitude coordinate of the ping"
-          - name: longitude
-            description: "Longitude coordinate of the ping"
-          - name: ping_timestamp
-            description: "UTC timestamp when the GPS ping was recorded"
+          - name: DEVICEID
+          - name: LATITUDE
+          - name: LONGITUDE
+          - name: EVENT_TIMESTAMP
+          - name: LOCATION
 
-      - name: dim_stores
-        description: "Master table of existing and competitor retail store locations"
+      - name: STORE_MASTER
+        description: "Verified store master table from Member 1"
         columns:
+          - name: STORE_ID
+          - name: STORE_NAME
+          - name: LATITUDE
+          - name: LONGITUDE
+          - name: AREA
+          - name: STORE_TYPE
+          - name: LOCATION
+
+      - name: spatial_join_output
+        description: "500m catchment spatial join output produced by Member 2 (PySpark + Apache Sedona)"
+        columns:
+          - name: device_id
           - name: store_id
-            description: "Unique identifier for each retail store"
-          - name: store_name
-            description: "Name of the store branch"
-          - name: brand_type
-            description: "Flag indicating Own Store vs Competitor Store"
-          - name: latitude
-            description: "Store latitude coordinate"
-          - name: longitude
-            description: "Store longitude coordinate"
+          - name: timestamp
+          - name: inside_catchment
+          - name: distance_meters

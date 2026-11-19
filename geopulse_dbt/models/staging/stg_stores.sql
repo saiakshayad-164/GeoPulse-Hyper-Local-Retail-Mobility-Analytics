@@ -4,22 +4,23 @@
     )
 }}
 
-with raw_stores as (
-    select * from {{ source('geopulse_raw', 'dim_stores') }}
+with source_data as (
+    select * from {{ source('geopulse_raw', 'STORE_MASTER') }}
 ),
 
-cleaned_stores as (
+cleaned as (
     select
-        store_id,
-        trim(store_name) as store_name,
-        upper(trim(brand_type)) as brand_type,
-        cast(latitude as float) as latitude,
-        cast(longitude as float) as longitude,
-        st_point(cast(longitude as float), cast(latitude as float)) as store_geo_point
-    from raw_stores
-    where latitude is not null
-      and longitude is not null
-      and store_id is not null
+        cast(STORE_ID as varchar) as store_id,
+        trim(STORE_NAME) as store_name,
+        cast(LATITUDE as float) as store_lat,
+        cast(LONGITUDE as float) as store_lon,
+        trim(AREA) as area,
+        trim(STORE_TYPE) as store_type,
+        LOCATION as store_location
+    from source_data
+    where STORE_ID is not null
+      and LATITUDE is not null
+      and LONGITUDE is not null
 )
 
-select * from cleaned_stores
+select distinct * from cleaned
