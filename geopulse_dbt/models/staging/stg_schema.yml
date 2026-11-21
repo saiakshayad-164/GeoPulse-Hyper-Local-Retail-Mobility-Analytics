@@ -4,31 +4,31 @@ models:
   - name: stg_gps_pings
     description: "Cleaned and deduplicated GPS ping events with Snowflake GEOGRAPHY points"
     columns:
-      - name: ping_id
-        description: "Primary key for each cleaned GPS ping"
-        tests:
-          - unique
-          - not_null
       - name: device_id
         description: "Anonymized mobile device ID"
         tests:
           - not_null
-      - name: geo_point
-        description: "Snowflake ST_POINT geography object"
+      - name: ping_timestamp
+        description: "Standardized UTC event timestamp"
+        tests:
+          - not_null
+      - name: gps_location
+        description: "Snowflake GEOGRAPHY point object"
         tests:
           - not_null
 
   - name: stg_stores
-    description: "Cleaned retail store master list with standardized brand flags and geography points"
+    description: "Cleaned retail store master list with standardized store types and geography points"
     columns:
       - name: store_id
         description: "Primary key for each retail store"
         tests:
           - unique
           - not_null
-      - name: brand_type
-        description: "Store ownership category"
+      - name: store_type
+        description: "Store status category"
         tests:
           - not_null
           - accepted_values:
-              values: ['OWN', 'COMPETITOR']
+              arguments:
+                values: ['Existing', 'Proposed']

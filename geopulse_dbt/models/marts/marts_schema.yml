@@ -2,34 +2,37 @@ version: 2
 
 models:
   - name: fct_store_footfall
-    description: "Hourly unique visitor count and ping density within a 100m radius of each store"
+    description: "Hourly unique visitor count and ping density within a 500m catchment radius of each store"
     columns:
       - name: store_id
         description: "Store identifier"
         tests:
           - not_null
-      - name: ping_hour
+      - name: hour
         description: "Hourly timestamp bucket"
         tests:
           - not_null
       - name: unique_visitors
-        description: "Distinct devices detected within 100 meters"
+        description: "Distinct devices detected within the store catchment"
         tests:
           - not_null
 
   - name: fct_cannibalization_metrics
-    description: "Pairwise distance and overlap risk analysis between own stores and nearby stores within 2km"
+    description: "Visitor overlap summary across existing and proposed stores"
     columns:
-      - name: target_store_id
-        description: "Own store ID being evaluated"
+      - name: store_id
+        description: "Store identifier"
+        tests:
+          - unique
+          - not_null
+      - name: store_type
+        description: "Store status category"
         tests:
           - not_null
-      - name: nearby_store_id
-        description: "Neighboring own or competitor store ID"
-        tests:
-          - not_null
-      - name: overlap_risk_level
-        description: "Cannibalization risk tier based on proximity"
-        tests:
           - accepted_values:
-              values: ['HIGH', 'MEDIUM', 'LOW']
+              arguments:
+                values: ['Existing', 'Proposed']
+      - name: overlapping_visitors
+        description: "Count of distinct visitors detected within store catchment"
+        tests:
+          - not_null

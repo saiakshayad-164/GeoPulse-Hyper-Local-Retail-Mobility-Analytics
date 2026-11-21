@@ -4,47 +4,36 @@
     )
 }}
 
-with pings as (
-    select * from {{ ref('stg_gps_pings') }}
+with spatial_matches as (
+    select * from {{ ref('stg_spatial_matches') }}
+    where inside_catchment = true
 ),
 
 stores as (
     select * from {{ ref('stg_stores') }}
 ),
 
-store_pings_matched as (
-    select
-        s.store_id,
-        s.store_name,
-        s.brand_type,
-        s.latitude as store_lat,
-        s.longitude as store_lon,
-        p.ping_id,
-        p.device_id,
-        p.ping_hour,
-        p.hour_of_day,
-        p.day_of_week,
-        st_distance(s.store_geo_point, p.geo_point) as distance_meters
-    from stores s
-    inner join pings p
-        on st_dwithin(s.store_geo_point, p.geo_point, 100)
-),
-
 hourly_footfall as (
     select
-        store_id,
-        store_name,
-        brand_type,
-        store_lat,
-        store_lon,
-        ping_hour,
-        hour_of_day,
-        day_of_week,
-        count(distinct device_id) as unique_visitors,
-        count(ping_id) as total_pings,
-        round(avg(distance_meters), 2) as avg_proximity_meters
-    from store_pings_matched
-    group by 1, 2, 3, 4, 5, 6, 7, 8
+        m.store_id,
+        s.store_name,
+        s.store_lat,
+        s.store_lon,
+        date_trunc('hour', m.match_timestamp) as hour,
+        extract(hour from m.match_timestamp) as hour_of_day,
+        case
+            when extract(hour from m.match_timestamp) between 6 and 11 then 'Morning'
+            when extract(hour from m.match_timestamp) between 12 and 17 then 'Afternoon'
+            when extract(hour from m.match_timestamp) between 18 and 22 then 'Evening'
+            else 'Night'
+        end as time_period_label,
+        count(distinct m.device_id) as unique_visitors,
+        count(*) as total_pings,
+        round(avg(m.distance_meters), 2) as avg_distance_meters
+    from spatial_matches m
+    left join stores s
+        on m.store_id = s.store_id
+    group by 1, 2, 3, 4, 5, 6, 7
 )
 
 select * from hourly_footfall
