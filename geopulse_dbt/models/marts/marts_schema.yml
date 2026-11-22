@@ -12,8 +12,27 @@ models:
         description: "Hourly timestamp bucket"
         tests:
           - not_null
+      - name: hour_of_day
+        description: "Hour of day extracted from match timestamp"
+        tests:
+          - not_null
+      - name: time_period_label
+        description: "Time-of-day summary bucket (Morning, Afternoon, Evening, Night)"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Morning', 'Afternoon', 'Evening', 'Night']
       - name: unique_visitors
         description: "Distinct devices detected within the store catchment"
+        tests:
+          - not_null
+      - name: total_pings
+        description: "Total GPS pings recorded within the store catchment for the hour"
+        tests:
+          - not_null
+      - name: avg_distance_meters
+        description: "Average distance in meters from store location"
         tests:
           - not_null
 
