@@ -34,8 +34,15 @@ Store master: `Store_ID`, `Store_Name`, `Latitude`, `Longitude`.
 ## Spatial join semantics
 A ping inside one or more catchments produces one row per matched store. A ping outside all catchments is retained once with its nearest store, `Inside_Catchment=False`, and the distance. This is a baseline functional implementation, not a distributed Spark/Sedona processing pipeline.
 
-## Setup
-The dependencies are listed in `requirements.txt`. Use the project virtual environment and run tests from the repository root after installing dependencies.
+## Setup and verification
+Install dependencies from the `akshaya` folder with `python -m pip install -r requirements.txt`, then run from the repository root:
+
+```powershell
+python -m unittest discover -s akshaya/tests -p 'test_*.py'
+python -m akshaya.src.benchmark_spatial_join
+```
+
+The benchmark harness uses synthetic records and reports measurements only when executed. The baseline tests and benchmark are not yet confirmed as run in this environment.
 
 ## Current status
 The baseline validation, catchment-generation, spatial-match, CSV-export utilities and test cases have been added. Execution of the test suite, real-data output generation, Spark/Sedona runtime resolution, and performance benchmarking remain to be verified. No measured record counts, runtimes or file sizes are reported until actual runs are completed.
